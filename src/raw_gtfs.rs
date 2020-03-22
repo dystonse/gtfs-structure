@@ -219,13 +219,13 @@ impl RawGtfs {
 
         Ok(Self {
             trips: read_objs_from_path(p.join("trips.txt")),
-            calendar: read_objs_from_optional_path(&p, "calendar.txt"),
-            calendar_dates: read_objs_from_optional_path(&p, "calendar_dates.txt"),
-            stops: read_objs_from_path(p.join("stops.txt")),
             routes: read_objs_from_path(p.join("routes.txt")),
-            stop_times: read_objs_from_path(p.join("stop_times.txt")),
             agencies: read_objs_from_path(p.join("agency.txt")),
-            shapes: read_objs_from_optional_path(&p, "shapes.txt"),
+            stop_times: read_objs_from_path(p.join("stop_times.txt")),
+            shapes: None, // read_objs_from_optional_path(&p, "shapes.txt"),
+            calendar: None, // read_objs_from_optional_path(&p, "calendar.txt"),
+            calendar_dates: None, // read_objs_from_optional_path(&p, "calendar_dates.txt"),
+            stops: read_objs_from_path(p.join("stops.txt")),
             fare_attributes: read_objs_from_optional_path(&p, "fare_attributes.txt"),
             feed_info: read_objs_from_optional_path(&p, "feed_info.txt"),
             read_duration: Utc::now().signed_duration_since(now).num_milliseconds(),
