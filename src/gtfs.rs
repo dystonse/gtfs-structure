@@ -241,17 +241,19 @@ fn create_trips(
             .sort_by(|a, b| a.stop_sequence.cmp(&b.stop_sequence));
     }
     for trip in &mut trips.values_mut() {
-        // shape_id can be used for the same purpose as route_variant, 
-        // but it might not be set because shape_id is an optional field,
-        // so we only need to use the route_variant in that case.
-        if trip.shape_id == None {
-            trip.route_variant = Some(calculate_route_variant(trip));
-        }
+        // shape_id could be used for the same purpose as route_variant, 
+        // but it might not be set because shape_id is an optional field.
+        //
+        // So we use the route_variant to make sure we can always identify
+        // which trips share the same route_variant 
+        // without having to rely on an optional field.
+        trip.route_variant = Some(calculate_route_variant(trip));
     }
     Ok(trips)
 }
 
-/// Calculates a hash of the sequence of all `stop_id`s in a given `trip` and returns the hash as a `String` value
+/// Calculates a hash of the sequence of all `stop_id`s 
+/// in a given `trip` and returns the hash as a `String` value
 fn calculate_route_variant(trip: &mut Trip) -> String {
     
     let mut hasher = DefaultHasher::new();
