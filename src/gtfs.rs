@@ -1,8 +1,9 @@
 use crate::{objects::*, Error, RawGtfs};
 use chrono::prelude::NaiveDate;
 use chrono::Duration;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, hash_map::DefaultHasher};
 use std::sync::Arc;
+use std::hash::{Hash, Hasher};
 
 /// Data structure with all the GTFS objects
 ///
@@ -223,6 +224,7 @@ fn create_trips(
         route_id: rt.route_id,
         stop_times: vec![],
         shape_id: rt.shape_id,
+        route_variant: None, // unofficial field, see definition in objects.rs
     }));
     for s in raw_stop_times {
         let trip = &mut trips
@@ -238,5 +240,27 @@ fn create_trips(
         trip.stop_times
             .sort_by(|a, b| a.stop_sequence.cmp(&b.stop_sequence));
     }
+    for trip in &mut trips.values_mut() {
+        // shape_id could be used for the same purpose as route_variant, 
+        // but it might not be set because shape_id is an optional field.
+        //
+        // So we use the route_variant to make sure we can always identify
+        // which trips share the same route_variant 
+        // without having to rely on an optional field.
+        trip.route_variant = Some(calculate_route_variant(trip));
+    }
     Ok(trips)
+}
+
+/// Calculates a hash of the sequence of all `stop_id`s 
+/// in a given `trip` and returns the hash as a `String` value
+fn calculate_route_variant(trip: &mut Trip) -> String {
+    
+    let mut hasher = DefaultHasher::new();
+
+    for stop_time in &trip.stop_times {
+        stop_time.stop.id().hash(&mut hasher);
+    }
+
+    hasher.finish().to_string()
 }

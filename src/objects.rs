@@ -419,6 +419,7 @@ pub struct Trip {
     pub route_id: String,
     pub stop_times: Vec<StopTime>,
     pub shape_id: Option<String>,
+    pub route_variant: Option<String>, // unofficial field (not in the GTFS spec) used to group trips with the same sequence of stops.
 }
 
 impl Type for Trip {
