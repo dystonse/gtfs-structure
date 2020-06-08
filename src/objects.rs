@@ -349,12 +349,14 @@ pub struct Route {
     pub route_order: Option<u32>,
     #[serde(
         deserialize_with = "de_with_optional_color",
-        serialize_with = "serialize_optional_color"
+        serialize_with = "serialize_optional_color",
+        default
     )]
     pub route_color: Option<RGB8>,
     #[serde(
         deserialize_with = "de_with_optional_color",
-        serialize_with = "serialize_optional_color"
+        serialize_with = "serialize_optional_color",
+        default
     )]
     pub route_text_color: Option<RGB8>,
 }
@@ -388,6 +390,7 @@ pub struct RawTrip {
     pub service_id: String,
     pub route_id: String,
     pub shape_id: Option<String>,
+    pub trip_headsign: Option<String>, 
 }
 
 impl Type for RawTrip {
@@ -420,6 +423,7 @@ pub struct Trip {
     pub stop_times: Vec<StopTime>,
     pub shape_id: Option<String>,
     pub route_variant: Option<String>, // unofficial field (not in the GTFS spec) used to group trips with the same sequence of stops.
+    pub trip_headsign: Option<String>, 
 }
 
 impl Type for Trip {
