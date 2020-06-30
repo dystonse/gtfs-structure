@@ -55,7 +55,7 @@ impl Default for LocationType {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum RouteType {
     Tramway,
     Subway,
