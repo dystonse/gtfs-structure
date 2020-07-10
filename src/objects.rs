@@ -442,6 +442,13 @@ impl Trip {
             or_else(|_s| Err(SimpleError::new(format!("Stop sequence {} does not occur in trip {}", stop_sequence, self.id))))?;
         Ok(stop_index)
     }
+
+    pub fn get_stop_time_by_sequence(&self, stop_sequence: u16) -> Result<&StopTime, SimpleError>  {
+        let stop_time = self.stop_times.iter().filter_map
+            (|st| if st.stop_sequence == stop_sequence {Some(st)} else {None}).exactly_one().
+            or_else(|_s| Err(SimpleError::new(format!("Stop sequence {} does not occur in trip {}", stop_sequence, self.id))))?;
+        Ok(stop_time)
+    }
 }
 
 impl Type for Trip {
