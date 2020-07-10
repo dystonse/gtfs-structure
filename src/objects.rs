@@ -4,6 +4,8 @@ use serde::de::{self, Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
 use std::fmt;
 use std::sync::Arc;
+use itertools::Itertools;
+use simple_error::SimpleError;
 
 pub trait Id {
     fn id(&self) -> &str;
@@ -424,6 +426,22 @@ pub struct Trip {
     pub shape_id: Option<String>,
     pub route_variant: Option<String>, // unofficial field (not in the GTFS spec) used to group trips with the same sequence of stops.
     pub trip_headsign: Option<String>, 
+}
+
+impl Trip {
+    pub fn get_stop_index_by_id(&self, stop_id: &str) -> Result<usize, SimpleError> {
+        let stop_index = self.stop_times.iter().enumerate().filter_map
+            (|(i, st)| if st.stop.id == stop_id {Some(i)} else {None}).exactly_one().
+            or_else(|s| Err(SimpleError::new(format!("Stop id {} occurs {} times in trip {}", stop_id, s.count(), self.id))))?;
+        Ok(stop_index)
+    }
+
+    pub fn get_stop_index_by_stop_sequence(&self, stop_sequence: u16) -> Result<usize, SimpleError> {
+        let stop_index = self.stop_times.iter().enumerate().filter_map
+            (|(i, st)| if st.stop_sequence == stop_sequence {Some(i)} else {None}).exactly_one().
+            or_else(|_s| Err(SimpleError::new(format!("Stop sequence {} does not occur in trip {}", stop_sequence, self.id))))?;
+        Ok(stop_index)
+    }
 }
 
 impl Type for Trip {
