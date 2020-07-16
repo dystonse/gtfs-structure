@@ -132,6 +132,39 @@ impl Gtfs {
         result
     }
 
+    /// Returns a list of all trip_ids for which the trips are schedules on the given date.
+    pub fn trips_for_date(&self, date: NaiveDate) -> Result<Vec<&Trip>, Error> {
+       let mut service_ids : Vec<&String> = Vec::with_capacity(self.calendar.len());
+        for (service_id, cal) in &self.calendar {
+            // first, check if the date is in the service's range
+            // and has the correct weekday
+            let mut is_scheduled = cal.valid_weekday(date) && 
+                                   cal.start_date <= date && 
+                                   cal.end_date >= date; 
+
+            // then apply exceptions for this date / service combintation
+            if let Some(exceptions) = self.calendar_dates.get(service_id) {
+                for cal_date in exceptions {
+                    if cal_date.date == date {
+                        match cal_date.exception_type {
+                            Exception::Added => { is_scheduled = true; },
+                            Exception::Deleted => { is_scheduled = false; }
+                        }
+                    }
+                }
+            }
+            
+            if is_scheduled {
+                service_ids.push(service_id);
+            }
+        }
+
+        // filter trips which have one of those service_ids
+        Ok(self.trips.values().filter(
+            |trip| service_ids.contains(&&trip.service_id)
+        ).collect())
+    }
+
     pub fn get_stop<'a>(&'a self, id: &str) -> Result<&'a Stop, Error> {
         match self.stops.get(id) {
             Some(stop) => Ok(stop),
