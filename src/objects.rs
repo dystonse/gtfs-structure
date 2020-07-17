@@ -71,6 +71,89 @@ pub enum RouteType {
     Other(u16),
 }
 
+impl RouteType {
+    /// Map values according to https://developers.google.com/transit/gtfs/reference/extended-route-types
+    pub fn normalized(&self) -> Self {
+        match self {
+            Self::Other(100) => Self::Rail,                 // Railway Service
+            Self::Other(101) => Self::Rail,                 // High Speed Rail Service
+            Self::Other(102) => Self::Rail,                 // Long Distance Trains
+            Self::Other(103) => Self::Rail,                 // Inter Regional Rail Service
+            Self::Other(104) => Self::Rail,                 // Car Transport Rail Service
+            Self::Other(105) => Self::Rail,                 // Sleeper Rail Service
+            Self::Other(106) => Self::Rail,                 // Regional Rail Service
+            Self::Other(107) => Self::Rail,                 // Tourist Railway Service
+            Self::Other(108) => Self::Rail,                 // Rail Shuttle (Within Complex)
+            Self::Other(109) => Self::Rail,                 // Suburban Railway
+            Self::Other(110) => Self::Rail,                 // Replacement Rail Service
+            Self::Other(111) => Self::Rail,                 // Special Rail Service
+            Self::Other(112) => Self::Rail,                 // Lorry Transport Rail Service
+            Self::Other(113) => Self::Rail,                 // All Rail Services
+            Self::Other(114) => Self::Rail,                 // Cross-Country Rail Service
+            Self::Other(115) => Self::Rail,                 // Vehicle Transport Rail Service
+            Self::Other(116) => Self::Rail,                 // Rack and Pinion Railway
+            Self::Other(117) => Self::Rail,                 // Additional Rail Service
+            Self::Other(200) => Self::Bus,                  // Coach Service
+            Self::Other(201) => Self::Bus,                  // International Coach Service
+            Self::Other(202) => Self::Bus,                  // National Coach Service
+            Self::Other(203) => Self::Bus,                  // Shuttle Coach Service
+            Self::Other(204) => Self::Bus,                  // Regional Coach Service
+            Self::Other(205) => Self::Bus,                  // Special Coach Service
+            Self::Other(206) => Self::Bus,                  // Sightseeing Coach Service
+            Self::Other(207) => Self::Bus,                  // Tourist Coach Service
+            Self::Other(208) => Self::Bus,                  // Commuter Coach Service
+            Self::Other(209) => Self::Bus,                  // All Coach Services
+            Self::Other(400) => *self,                      // Urban Railway Service
+            Self::Other(401) => Self::Subway,               // Metro Service
+            Self::Other(402) => Self::Subway,               // Underground Service
+            Self::Other(403) => *self,                      // Urban Railway Service
+            Self::Other(404) => *self,                      // All Urban Railway Services
+            Self::Other(405) => *self,                      // Monorail
+            Self::Other(700) => Self::Bus,                  // Bus Service
+            Self::Other(701) => Self::Bus,                  // Regional Bus Service
+            Self::Other(702) => Self::Bus,                  // Express Bus Service
+            Self::Other(703) => Self::Bus,                  // Stopping Bus Service
+            Self::Other(704) => Self::Bus,                  // Local Bus Service
+            Self::Other(705) => Self::Bus,                  // Night Bus Service
+            Self::Other(706) => Self::Bus,                  // Post Bus Service
+            Self::Other(707) => Self::Bus,                  // Special Needs Bus
+            Self::Other(708) => Self::Bus,                  // Mobility Bus Service
+            Self::Other(709) => Self::Bus,                  // Mobility Bus for Registered Disabled
+            Self::Other(710) => Self::Bus,                  // Sightseeing Bus
+            Self::Other(711) => Self::Bus,                  // Shuttle Bus
+            Self::Other(712) => Self::Bus,                  // School Bus
+            Self::Other(713) => Self::Bus,                  // School and Public Service Bus
+            Self::Other(714) => Self::Bus,                  // Rail Replacement Bus Service
+            Self::Other(715) => Self::Bus,                  // Demand and Response Bus Service
+            Self::Other(716) => Self::Bus,                  // All Bus Services
+            Self::Other(800) => Self::Tramway,              // Trolleybus Service
+            Self::Other(900) => Self::Tramway,              // Tram Service
+            Self::Other(901) => Self::Tramway,              // City Tram Service
+            Self::Other(902) => Self::Tramway,              // Local Tram Service
+            Self::Other(903) => Self::Tramway,              // Regional Tram Service
+            Self::Other(904) => Self::Tramway,              // Sightseeing Tram Service
+            Self::Other(905) => Self::Tramway,              // Shuttle Tram Service
+            Self::Other(906) => Self::Tramway,              // All Tram Services
+            Self::Other(1000) => Self::Ferry,               // Water Transport Service
+            Self::Other(1100) => *self,                     // Air Service
+            Self::Other(1200) => Self::Ferry,               // Ferry Service
+            Self::Other(1300) => Self::Gondola,             // Aerial Lift Service
+            Self::Other(1400) => Self::Funicular,           // Funicular Service
+            Self::Other(1500) => *self,                     // Taxi Service
+            Self::Other(1501) => *self,                     // Communal Taxi Service
+            Self::Other(1502) => *self,                     // Water Taxi Service
+            Self::Other(1503) => *self,                     // Rail Taxi Service
+            Self::Other(1504) => *self,                     // Bike Taxi Service
+            Self::Other(1505) => *self,                     // Licensed Taxi Service
+            Self::Other(1506) => *self,                     // Private Hire Service Vehicle
+            Self::Other(1507) => *self,                     // All Taxi Services
+            Self::Other(1700) => *self,                     // Miscellaneous Service
+            Self::Other(1702) => *self,                     // Horse-drawn Carriage
+            _ => *self
+        }
+    }
+}
+
 impl Default for RouteType {
     fn default() -> RouteType {
         RouteType::Bus
